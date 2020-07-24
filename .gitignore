@@ -1,1 +1,4 @@
 .Rproj.user
+*.RDS
+*.tar.gz
+.ipynb_checkpoints/
