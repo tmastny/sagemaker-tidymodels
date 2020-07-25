@@ -2,9 +2,13 @@ library(recipes)
 library(parsnip)
 library(workflows)
 
+library(readr)
+
 #' Ping to show server is there
 #' @get /ping
 function() {
+  test_fn()
+  test_fn2()
   return('')
 }
 
@@ -14,21 +18,26 @@ function() {
 #' @post /invocations
 function(req) {
 
-  # Setup locations
+  test_fn2()
+
   prefix <- '/opt/ml'
   model_path <- file.path(prefix, 'model')
 
-  # Bring in model file and factor levels
+  # TODO:
+  #   consider decomposing into functions like `scikit-learn:
+  #   * model_fn
+  #   * input_fn
+  #   * predict_fn
+  #   * output_fn
   model <- readRDS(file.path(model_path, 'model.RDS'))
-
-  # Read in data
-  data <- read.csv(text = req$postBody, header = FALSE, strip.white = TRUE)
-
   col_names <- model$pre$actions$recipe$recipe$var_info$variable
+
+
+  data <- read.csv(text = req$postBody, header = FALSE, strip.white = TRUE)
   names(data) <- col_names
 
 
   pred <- predict(model, data)
 
-  paste0(pred$.pred_class, collapse = ",")
+  format_csv(pred, col_names = FALSE)
 }

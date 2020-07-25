@@ -25,6 +25,9 @@ RUN install2.r --error \
     recipes \
     plumber
 
+
+RUN python3 -m pip --no-cache-dir install sagemaker-inference
+
 COPY server/serve.R .
 COPY server/plumber.R .
 

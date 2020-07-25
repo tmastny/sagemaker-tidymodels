@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import subprocess
-from sagemaker_training import entry_point, environment
+import sagemaker_training
+from sagemaker_inference.environment import code_dir, Environment
 
 
 ## thoughts:
@@ -12,26 +14,32 @@ from sagemaker_training import entry_point, environment
 ## don't have to spin up secondary process (except for entry point I guess)
 
 def train():
-    env = environment.Environment()
-    
+    env = sagemaker_training.environment.Environment()
+
     # read hyperparameters as script arguments
     args = env.to_cmd_args()
-    
+
     # get the environment variables
     env_vars = env.to_env_vars()
-    
+
     # execute the entry point
-    entry_point.run(
+    sagemaker_training.entry_point.run(
         uri=env.module_dir,
         user_entry_point=env.user_entry_point,
         args=args,
         env_vars=env_vars
     )
 
-    
+
 def serve():
+    # env = Environment()
+    # print(env.module_name)
+    # 
+    # print(code_dir)
+    # print(os.listdir(code_dir))
+    
     subprocess.run(["./serve.R"])
-  
+
 
 if __name__ == "__main__":
 
