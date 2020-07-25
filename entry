@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+
+import sys
+import subprocess
+from sagemaker_training import entry_point, environment
+
+
+## thoughts:
+## could write this in R
+#
+## dispatch to function by command-line train/serve
+## don't have to spin up secondary process (except for entry point I guess)
+
+def train():
+    env = environment.Environment()
+    
+    # read hyperparameters as script arguments
+    args = env.to_cmd_args()
+    
+    # get the environment variables
+    env_vars = env.to_env_vars()
+    
+    # execute the entry point
+    entry_point.run(
+        uri=env.module_dir,
+        user_entry_point=env.user_entry_point,
+        args=args,
+        env_vars=env_vars
+    )
+
+    
+def serve():
+    subprocess.run(["./serve.R"])
+  
+
+if __name__ == "__main__":
+
+    if sys.argv[1] == 'train':
+        train()
+    elif sys.argv[1] == 'serve':
+        serve()

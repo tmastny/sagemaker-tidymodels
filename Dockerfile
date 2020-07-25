@@ -34,3 +34,8 @@ RUN install2.r --error \
 
 # ENTRYPOINT ["/bin/sh -c", "/opt/ml/code/Untitled.R"]
 # ENTRYPOINT ["/usr/local/bin/Rscript", "/opt/ml/code/Untitled.R"]
+COPY R/serve.R .
+COPY R/plumber.R .
+
+COPY entry .
+ENTRYPOINT ["./entry"]

@@ -3,6 +3,7 @@
 library(plumber)
 
 
-print('hello from plumber')
+print('hello starting plumber...')
 
-app <- plumb('/opt/ml/plumber.R')
+app <- plumb('plumber.R')
+app$run(host = '0.0.0.0', port = 8080)

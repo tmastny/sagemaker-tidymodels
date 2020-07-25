@@ -1,7 +1,12 @@
+library(recipes)
+library(parsnip)
+library(workflows)
+
 #' Ping to show server is there
 #' @get /ping
 function() {
-  return('')}
+  return('')
+}
 
 
 #' Parse input and return the prediction from the model
@@ -17,9 +22,10 @@ function(req) {
   model <- readRDS(file.path(model_path, 'model.RDS'))
 
   # Read in data
-  conn <- textConnection(gsub('\\\\n', '\n', req$postBody))
-  data <- read.csv(conn)
-  close(conn)
+  data <- read.csv(text = req$postBody, header = FALSE, strip.white = TRUE)
+
+  col_names <- model$pre$actions$recipe$recipe$var_info$variable
+  names(data) <- col_names
 
 
   pred <- predict(model, data)
