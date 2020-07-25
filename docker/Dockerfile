@@ -25,17 +25,8 @@ RUN install2.r --error \
     recipes \
     plumber
 
-
-# COPY train .
-#
-# copy R/serve.R serve.R
-# COPY serve .
-# COPY R/Untitled.R /opt/ml/code/
-
-# ENTRYPOINT ["/bin/sh -c", "/opt/ml/code/Untitled.R"]
-# ENTRYPOINT ["/usr/local/bin/Rscript", "/opt/ml/code/Untitled.R"]
-COPY R/serve.R .
-COPY R/plumber.R .
+COPY server/serve.R .
+COPY server/plumber.R .
 
 COPY entry .
 ENTRYPOINT ["./entry"]
