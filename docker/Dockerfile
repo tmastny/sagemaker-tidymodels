@@ -30,6 +30,7 @@ RUN python3 -m pip --no-cache-dir install sagemaker-inference
 
 COPY server/serve.R .
 COPY server/plumber.R .
+COPY server/default_fn.R .
 
 COPY entry .
 ENTRYPOINT ["./entry"]
