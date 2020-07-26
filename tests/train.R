@@ -5,7 +5,7 @@ library(tidymodels)
 if (sys.nframe() == 0) {
 
   input_path <- file.path(Sys.getenv('SM_CHANNEL_TRAIN'), "census-income.csv")
-  df <- read.csv('data/census-income.csv', stringsAsFactors = TRUE)
+  df <- read.csv(input_path, stringsAsFactors = TRUE)
 
 
   pipeline <- workflow() %>%

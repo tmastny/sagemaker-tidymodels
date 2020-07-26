@@ -45,18 +45,18 @@ The main difference is the `entry_point` parameter, where you can supply
 an R script. This R script should process the raw data, train the model,
 and save the final fit.
 
-```{python, eval=FALSE, code=readLines("tests/basic_tidymodels_example.py")}
+```{python, eval=FALSE, code=readLines("tests/train.py")}
 ```
 
 `train.R` is a normal R script, with a few necessary additions so it can
 run on the command line effectively.
 
-```{r, eval=FALSE, code=readLines("tests/basic-train.R")}
+```{r, eval=FALSE, code=readLines("tests/train.R")}
 ```
 
 1. The first line should be the shebang `#!/usr/bin/env Rscript`, so it can be
    ran as `./train.R` as required by the framework. Make sure to run
-   `chmod +x tests/basic-train.R` so it's an executable.
+   `chmod +x train.R` so it's an executable.
 
 2. All the training logic should be wrapped by the following `if` statement.
    This seems a little mysterious, but it makes sure that the training logic
@@ -98,7 +98,7 @@ If we wanted to output the probability of belonging to either class,
 we could include our own `predict_fn` in `basic-train.R`:
 
 ```{r, eval=FALSE}
-# add to `basic-train.R`
+# add to `train.R`
 predict_fn <- function(model, new_data) {
   predict(model, new_data, type = "prob")
 }
@@ -108,7 +108,7 @@ This is also why the training script needs to be wrapped by the `if` statement.
 
 ### Identical Local and Cloud Scripts
 
-In `basic-train.R`, the logic you use to train is exactly the same you would
+In `train.R`, the logic you use to train is exactly the same you would
 write locally. However, you can't run the script locally as is,
 because `sagemaker` defines the environment variables `SM_CHANNEL_TRAIN` and
 `SM_MODEL_DIR` (as well as
@@ -137,6 +137,6 @@ in sagemaker as the `entry_point`.
 
 Then when running locally, we can define inputs and outputs
 ```bash
-Rscript tests/basic-train.R -i data/census-income.csv -o models/
+Rscript tests/train.R -i data/census-income.csv -o models/
 ```
 on the command line so it runs properly.

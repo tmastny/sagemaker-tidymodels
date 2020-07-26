@@ -1,18 +1,19 @@
-.PHONY: lint test test-local test-integration
-
 lint:
 	black .
 
-test-local: tests/test_local_instance.py tests/advanced-train.R
+docker-build:
+	docker build docker/ -t sagemaker-tidymodels
+
+test-local:
 	pytest tests/test_local_instance.py
 
-test-integration: tests/basic-train.R tests/basic_tidymodels_example.py
+test-integration:
 	pytest tests/test_integration.py
 
-test:
-	test-local
-	test-integration
+test: | test-local test-integration
 
-README.md: README.Rmd tests/basic-train.R tests/basic_tidymodels_example.py
+publish: | lint docker-build test
+
+README.md: README.Rmd tests/train.R tests/train.py
 	Rscript -e "rmarkdown::render('README.Rmd', run_pandoc = FALSE)"; \
 	rm -f README.knit.md
