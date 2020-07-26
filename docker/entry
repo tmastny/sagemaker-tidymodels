@@ -20,10 +20,6 @@ def train():
     # get the environment variables
     env_vars = env.to_env_vars()
 
-    print(env.module_dir)
-    print(env.user_entry_point)
-    print(args)
-
     # execute the entry point
     entry_point.run(
         uri=env.module_dir,
@@ -38,7 +34,7 @@ def serve():
         uri=os.environ.get('SAGEMAKER_SUBMIT_DIRECTORY'),
         path='/opt/ml/code/'
     )
-    
+
     subprocess.run(["./serve.R"])
 
 
