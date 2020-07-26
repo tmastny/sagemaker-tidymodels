@@ -1,7 +1,5 @@
 ---
-output:
-  github_document:
-    html_preview: false
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,7 +14,7 @@ knitr::opts_chunk$set(
 # sagemaker-tidymodels
 
 `sagemaker-tidymodels` is an [AWS Sagemaker](https://aws.amazon.com/sagemaker/)
-framework for training and deploy machine learning models written in R. 
+framework for training and deploy machine learning models written in R.
 
 This framework lets you do cloud-based training and deployment
 with [tidymodels](https://www.tidymodels.org/), using the same code you would
@@ -32,7 +30,7 @@ pip install sagemaker-tidymodels/
 ```
 
 The docker image is hosted on [dockerhub](https://hub.docker.com/repository/docker/tmastny/sagemaker-tidymodels),
-or you can pull directly with 
+or you can pull directly with
 ```bash
 docker pull tmastny/sagemaker-tidymodels
 ```
@@ -41,7 +39,7 @@ docker pull tmastny/sagemaker-tidymodels
 
 The `sagemaker-tidymodels` Python package provides simple wrappers around
 the [Estimator](https://sagemaker.readthedocs.io/en/stable/api/training/estimators.html)
-and  Model `sagemaker` classes. 
+and  Model `sagemaker` classes.
 
 The main difference is the `entry_point` parameter, where you can supply
 an R script. This R script should process the raw data, train the model,
@@ -51,16 +49,16 @@ and save the final fit.
 ```
 
 `train.R` is a normal R script, with a few necessary additions so it can
-run on the command line effectively. 
+run on the command line effectively.
 
 ```{r, eval=FALSE, code=readLines("tests/basic-train.R")}
 ```
 
 1. The first line should be the shebang `#!/usr/bin/env Rscript`, so it can be
-   ran as `./train.R` as required by the framework. Make sure to run 
-   `chmod +x tests/basic-train.R` so it's an executable. 
-   
-2. All the training logic should be wrapped by the following `if` statement. 
+   ran as `./train.R` as required by the framework. Make sure to run
+   `chmod +x tests/basic-train.R` so it's an executable.
+
+2. All the training logic should be wrapped by the following `if` statement.
    This seems a little mysterious, but it makes sure that the training logic
    doesn't accidentally run when we've deployed our model for predictions.
 ```r
@@ -94,9 +92,9 @@ defaults by defining these functions in your `entry_point` script.
 
 The valid options are `model_fn`, `input_fn`, `predict_fn`, and `output_fn`.
 In our script `basic-train.R`, the default `predict_fn` means we get class
-predictors, either `- 50000.` or `50000+.`. 
+predictors, either `- 50000.` or `50000+.`.
 
-If we wanted to output the probability of belonging to either class, 
+If we wanted to output the probability of belonging to either class,
 we could include our own `predict_fn` in `basic-train.R`:
 
 ```{r, eval=FALSE}
@@ -110,14 +108,14 @@ This is also why the training script needs to be wrapped by the `if` statement.
 
 ### Identical Local and Cloud Scripts
 
-In `basic-train.R`, the logic you use to train is exactly the same you would 
-write locally. However, you can't run the script locally as is, 
+In `basic-train.R`, the logic you use to train is exactly the same you would
+write locally. However, you can't run the script locally as is,
 because `sagemaker` defines the environment variables `SM_CHANNEL_TRAIN` and
-`SM_MODEL_DIR` (as well as 
+`SM_MODEL_DIR` (as well as
 [many others](https://github.com/aws/sagemaker-training-toolkit/blob/397ddea3d1871937dd50dbf36d59b35b182e329b/src/sagemaker_training/params.py#L1-L58)
 you might want to use).
 
-A nice way to set some defaults so the script can run both locally and is 
+A nice way to set some defaults so the script can run both locally and is
 sagemaker is by using [r-optparse](https://github.com/trevorld/r-optparse).
 
 For example:
@@ -133,13 +131,12 @@ option_list <- list(
 args <- parse_args(OptionParser(option_list = option_list))
 ```
 
-This lets us use `args$input` and `args$output` for the 
-input data path and output model path if we are running locally or 
+This lets us use `args$input` and `args$output` for the
+input data path and output model path if we are running locally or
 in sagemaker as the `entry_point`.
 
-Then when running locally, we can define inputs and outputs 
+Then when running locally, we can define inputs and outputs
 ```bash
 Rscript tests/basic-train.R -i data/census-income.csv -o models/
 ```
 on the command line so it runs properly.
-

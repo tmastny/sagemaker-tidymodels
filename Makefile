@@ -14,4 +14,5 @@ test:
 	test-integration
 
 README.md: README.Rmd tests/basic-train.R tests/basic_tidymodels_example.py
-	Rscript -e "rmarkdown::render('README.Rmd')"
+	Rscript -e "rmarkdown::render('README.Rmd', run_pandoc = FALSE)"; \
+	rm -f README.knit.md
