@@ -55,3 +55,9 @@ def test_local_endpoint():
     predictor.delete_endpoint()
 
     assert predicted_value == ["- 50000.\n"]
+
+## TODO:
+##   add test with custom serve functions
+
+## TODO:
+##   integration test with dockerhub
