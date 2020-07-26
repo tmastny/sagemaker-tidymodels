@@ -3,9 +3,7 @@
 import os
 import sys
 import subprocess
-import sagemaker_training
-from sagemaker_inference.environment import code_dir, Environment
-
+from sagemaker_training import environment, entry_point, files
 
 ## thoughts:
 ## could write this in R
@@ -14,7 +12,7 @@ from sagemaker_inference.environment import code_dir, Environment
 ## don't have to spin up secondary process (except for entry point I guess)
 
 def train():
-    env = sagemaker_training.environment.Environment()
+    env = environment.Environment()
 
     # read hyperparameters as script arguments
     args = env.to_cmd_args()
@@ -22,8 +20,12 @@ def train():
     # get the environment variables
     env_vars = env.to_env_vars()
 
+    print(env.module_dir)
+    print(env.user_entry_point)
+    print(args)
+
     # execute the entry point
-    sagemaker_training.entry_point.run(
+    entry_point.run(
         uri=env.module_dir,
         user_entry_point=env.user_entry_point,
         args=args,
@@ -32,11 +34,10 @@ def train():
 
 
 def serve():
-    # env = Environment()
-    # print(env.module_name)
-    # 
-    # print(code_dir)
-    # print(os.listdir(code_dir))
+    files.download_and_extract(
+        uri=os.environ.get('SAGEMAKER_SUBMIT_DIRECTORY'),
+        path='/opt/ml/code/'
+    )
     
     subprocess.run(["./serve.R"])
 
