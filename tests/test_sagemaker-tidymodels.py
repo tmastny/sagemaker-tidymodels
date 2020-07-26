@@ -28,7 +28,8 @@ def test_local_train():
     tidymodels.fit({"train": s3_training_data})
 
 
-example_data = r"73,Not in universe,0,0,High school graduate,0,Not in universe,Widowed,Not in universe or children,Not in universe,White,All other,Female,Not in universe,Not in universe,Not in labor force,0,0,0,Nonfiler,Not in universe,Not in universe,Other Rel 18+ ever marr not in subfamily,Other relative of householder,1700.09,?,?,?,Not in universe under 1 year old,?,0,Not in universe,United-States,United-States,United-States,Native- Born in the United States,0,Not in universe,2,0,95,- 50000.\n"
+with open("tests/example-data.csv") as example_data:
+    example_data = example_data.read()
 
 
 def test_local_endpoint():
