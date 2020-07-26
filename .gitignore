@@ -6,6 +6,7 @@ renv.lock
 *.RDS
 *.tar.gz
 .ipynb_checkpoints/
+data/
 
 *.py[cod]
 
