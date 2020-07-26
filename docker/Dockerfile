@@ -16,7 +16,8 @@ RUN install2.r --error \
     janitor \
     readr \
     recipes \
-    plumber
+    plumber \
+    optparse
 
 COPY server/serve.R .
 COPY server/plumber.R .
