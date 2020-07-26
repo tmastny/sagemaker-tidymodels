@@ -15,7 +15,9 @@ RUN install2.r --error \
     tidymodels \
     janitor \
     readr \
-    recipes
+    recipes \
+    plumber \
+    optparse
 
 COPY server/serve.R .
 COPY server/plumber.R .
