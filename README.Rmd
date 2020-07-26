@@ -45,18 +45,7 @@ The main difference is the `entry_point` parameter, where you can supply
 an R script. This R script should process the raw data, train the model,
 and save the final fit.
 
-```{python, eval=FALSE}
-from sagemaker_tidymodels import Tidymodels
-
-tidymodels = Tidymodels(
-    entry_point="tests/basic-train.R",
-    train_instance_type="local",
-    role=role,
-    image_name="tmastny/sagemaker-tidymodels:latest",
-)
-
-s3_data <- "s3://sagemaker-sample-data-us-east-2/processing/census/census-income.csv"
-tidymodels.fit({'train': s3_data})
+```{python, eval=FALSE, code=readLines("tests/basic_tidymodels_example.py")}
 ```
 
 `train.R` is a normal R script, with a few necessary additions so it can
@@ -83,12 +72,9 @@ if (sys.nframe() == 0) {
    `Sys.getenv('SM_CHANNEL_TRAIN')`. Likewise, the output model path can
    be found with `Sys.getenv('SM_MODEL_DIR')`.
 
-From there, you can train and deploy the models as normal!
+From there, you can deploy the model as normal!
 
 ```{python, eval=FALSE}
-s3_data <- "s3://sagemaker-sample-data-us-east-2/processing/census/census-income.csv"
-tidymodels.fit({'train': s3_data})
-
 predictor = model.deploy(initial_instance_count=1, instance_type="local")
 predictor.predict(r'28\n')
 ```

@@ -41,17 +41,17 @@ an R script. This R script should process the raw data, train the model,
 and save the final fit.
 
 ``` python
-from sagemaker_tidymodels import Tidymodels
+from sagemaker_tidymodels import Tidymodels, get_role
 
 tidymodels = Tidymodels(
     entry_point="tests/basic-train.R",
     train_instance_type="local",
-    role=role,
+    role=get_role(),
     image_name="tmastny/sagemaker-tidymodels:latest",
 )
 
-s3_data <- "s3://sagemaker-sample-data-us-east-2/processing/census/census-income.csv"
-tidymodels.fit({'train': s3_data})
+s3_data = "s3://sagemaker-sample-data-us-east-2/processing/census/census-income.csv"
+tidymodels.fit({"train": s3_data})
 ```
 
 `train.R` is a normal R script, with a few necessary additions so it can
@@ -102,12 +102,9 @@ if (sys.nframe() == 0) {
     using `Sys.getenv('SM_CHANNEL_TRAIN')`. Likewise, the output model
     path can be found with `Sys.getenv('SM_MODEL_DIR')`.
 
-From there, you can train and deploy the models as normal\!
+From there, you can deploy the model as normal\!
 
 ``` python
-s3_data <- "s3://sagemaker-sample-data-us-east-2/processing/census/census-income.csv"
-tidymodels.fit({'train': s3_data})
-
 predictor = model.deploy(initial_instance_count=1, instance_type="local")
 predictor.predict(r'28\n')
 ```
