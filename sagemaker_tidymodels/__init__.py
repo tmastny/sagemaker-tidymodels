@@ -1,6 +1,16 @@
 from sagemaker.estimator import Framework
 from sagemaker.model import FrameworkModel
 from sagemaker.predictor import RealTimePredictor
+import subprocess
+
+
+def get_role(profile="sagemaker"):
+    command = "aws configure get role_arn --profile {}".format(profile)
+    return (
+        subprocess.run(command.split(" "), stdout=subprocess.PIPE,)
+        .stdout.decode("utf-8")
+        .strip()
+    )
 
 
 class TidymodelsPredictor(RealTimePredictor):
@@ -32,14 +42,7 @@ class TidymodelsModel(FrameworkModel):
 
 
 class Tidymodels(Framework):
-    def __init__(
-        self,
-        entry_point,
-        image_name,
-        role,
-        train_instance_type,
-        **kwargs
-    ):
+    def __init__(self, entry_point, image_name, role, train_instance_type, **kwargs):
         train_instance_count = kwargs.get("train_instance_count")
         if train_instance_count:
             if train_instance_count != 1:
