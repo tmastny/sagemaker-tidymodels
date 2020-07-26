@@ -44,7 +44,7 @@ and save the final fit.
 from sagemaker_tidymodels import Tidymodels, get_role
 
 tidymodels = Tidymodels(
-    entry_point="tests/basic-train.R",
+    entry_point="tests/train.R",
     train_instance_type="local",
     role=get_role(),
     image_name="tmastny/sagemaker-tidymodels:latest",
@@ -65,7 +65,7 @@ library(tidymodels)
 if (sys.nframe() == 0) {
 
   input_path <- file.path(Sys.getenv('SM_CHANNEL_TRAIN'), "census-income.csv")
-  df <- read.csv('data/census-income.csv', stringsAsFactors = TRUE)
+  df <- read.csv(input_path, stringsAsFactors = TRUE)
 
 
   pipeline <- workflow() %>%
@@ -82,7 +82,7 @@ if (sys.nframe() == 0) {
 
 1.  The first line should be the shebang `#!/usr/bin/env Rscript`, so it
     can be ran as `./train.R` as required by the framework. Make sure to
-    run `chmod +x tests/basic-train.R` so it’s an executable.
+    run `chmod +x train.R` so it’s an executable.
 
 2.  All the training logic should be wrapped by the following `if`
     statement. This seems a little mysterious, but it makes sure that
@@ -127,7 +127,7 @@ If we wanted to output the probability of belonging to either class, we
 could include our own `predict_fn` in `basic-train.R`:
 
 ``` r
-# add to `basic-train.R`
+# add to `train.R`
 predict_fn <- function(model, new_data) {
   predict(model, new_data, type = "prob")
 }
@@ -138,10 +138,10 @@ statement.
 
 ### Identical Local and Cloud Scripts
 
-In `basic-train.R`, the logic you use to train is exactly the same you
-would write locally. However, you can’t run the script locally as is,
-because `sagemaker` defines the environment variables `SM_CHANNEL_TRAIN`
-and `SM_MODEL_DIR` (as well as [many
+In `train.R`, the logic you use to train is exactly the same you would
+write locally. However, you can’t run the script locally as is, because
+`sagemaker` defines the environment variables `SM_CHANNEL_TRAIN` and
+`SM_MODEL_DIR` (as well as [many
 others](https://github.com/aws/sagemaker-training-toolkit/blob/397ddea3d1871937dd50dbf36d59b35b182e329b/src/sagemaker_training/params.py#L1-L58)
 you might want to use).
 
@@ -169,7 +169,7 @@ and output model path if we are running locally or in sagemaker as the
 Then when running locally, we can define inputs and outputs
 
 ``` bash
-Rscript tests/basic-train.R -i data/census-income.csv -o models/
+Rscript tests/train.R -i data/census-income.csv -o models/
 ```
 
 on the command line so it runs properly.
