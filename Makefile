@@ -14,4 +14,4 @@ test:
 	test-integration
 
 README.md: README.Rmd tests/basic-train.R tests/basic_tidymodels_example.py
-	Rscript -e "knitr::knit('README.Rmd')"
+	Rscript -e "rmarkdown::render('README.Rmd')"
