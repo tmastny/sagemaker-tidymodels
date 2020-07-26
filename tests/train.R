@@ -8,10 +8,6 @@ library(rsample)
 library(dplyr)
 library(janitor)
 
-test_fn2 <- function() {
-  print("hello from other func!!!")
-}
-
 
 if (sys.nframe() == 0) {
 

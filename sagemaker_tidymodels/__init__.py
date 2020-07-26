@@ -32,8 +32,30 @@ class TidymodelsModel(FrameworkModel):
 
 
 class Tidymodels(Framework):
-    def __init__(self, **kwargs):
-        super(Tidymodels, self).__init__(**kwargs)
+    def __init__(
+        self,
+        entry_point,
+        image_name,
+        role,
+        train_instance_type,
+        **kwargs
+    ):
+        train_instance_count = kwargs.get("train_instance_count")
+        if train_instance_count:
+            if train_instance_count != 1:
+                raise AttributeError(
+                    "Tidymodels does not support distributed training. "
+                    "Please remove the 'train_instance_count' argument or set "
+                    "'train_instance_count=1' when initializing SKLearn."
+                )
+
+        super(Tidymodels, self).__init__(
+            entry_point=entry_point,
+            image_name=image_name,
+            role=role,
+            train_instance_type=train_instance_type,
+            **dict(kwargs, train_instance_count=1)
+        )
 
     def create_model(self, **kwargs):
         return TidymodelsModel(
