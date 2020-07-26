@@ -1,5 +1,7 @@
 from os import supports_bytes_environ
 import subprocess
+
+import sagemaker
 from sagemaker_tidymodels import Tidymodels, TidymodelsModel
 from sagemaker.predictor import json_deserializer
 
@@ -19,7 +21,7 @@ role = (
 
 def test_local_train():
     tidymodels = Tidymodels(
-        entry_point="tests/train.R",
+        entry_point="tests/advanced-train.R",
         train_instance_type="local",
         role=role,
         image_name="sagemaker-tidymodels",
@@ -39,7 +41,7 @@ def test_local_endpoint():
     model = TidymodelsModel(
         model_data=model_data,
         role=role,
-        entry_point="tests/train.R",
+        entry_point="tests/advanced-train.R",
         source_dir=source_dir,
         image="sagemaker-tidymodels",
     )
@@ -48,4 +50,8 @@ def test_local_endpoint():
     predictor.content_type = "application/json"
     predictor.deserializer = json_deserializer
 
-    assert predictor.predict(example_data) == ["- 50000.\n"]
+    predicted_value = predictor.predict(example_data)
+
+    predictor.delete_endpoint()
+
+    assert predicted_value == ["- 50000.\n"]
