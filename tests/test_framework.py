@@ -2,8 +2,7 @@ from _pytest.outcomes import skip
 import pytest
 
 import sys
-import subprocess
-import tempfile
+
 
 from sagemaker_tidymodels import Tidymodels, TidymodelsModel, get_role
 from sagemaker.predictor import json_deserializer
@@ -26,31 +25,43 @@ def make_predictor(model, instance_type="local"):
 
 
 @pytest.mark.parametrize(
-    "train_instance_type",
-    ["local", pytest.param("ml.m4.xlarge", marks=pytest.mark.slow)],
+    "instance_type,image",
+    [
+        ("local", "sagemaker-tidymodels"),
+        pytest.param(
+            "ml.t2.medium", "tmastny/sagemaker-tidymodels", marks=pytest.mark.slow
+        ),
+    ],
 )
 @pytest.mark.parametrize("entry_point", ["tests/train.R", "tests/train-adv.R"])
-def test_trainining(entry_point, train_instance_type):
+def test_train(entry_point, instance_type, image):
+
     tidymodels = Tidymodels(
         entry_point=entry_point,
-        train_instance_type=train_instance_type,
+        train_instance_type=instance_type,
         role=get_role(),
-        image_name="sagemaker-tidymodels",
+        image_name=image,
     )
 
     tidymodels.fit({"train": s3_training_data})
 
 
 @pytest.mark.parametrize(
-    "instance_type", ["local", pytest.param("ml.t2.medium", marks=pytest.mark.slow)],
+    "instance_type,image",
+    [
+        ("local", "sagemaker-tidymodels"),
+        pytest.param(
+            "ml.t2.medium", "tmastny/sagemaker-tidymodels", marks=pytest.mark.slow
+        ),
+    ],
 )
-def test_endpoint(instance_type):
+def test_endpoint(instance_type, image):
 
     model = TidymodelsModel(
         model_data=model_data,
         role=get_role(),
         entry_point="tests/train-adv.R",
-        image="sagemaker-tidymodels",
+        image=image,
     )
 
     predictor = make_predictor(model, instance_type)
@@ -63,15 +74,10 @@ def test_endpoint(instance_type):
 
 def test_custom_serve_fn(capsys):
 
-    _, temp_train = tempfile.mkstemp()
-
-    with open(temp_train, "w") as file:
-        subprocess.run(["cat", "tests/serve-custom.R", "tests/train.R"], stdout=file)
-
     model = TidymodelsModel(
         model_data=model_data,
         role=get_role(),
-        entry_point=temp_train,
+        entry_point="tests/serve-custom.R",
         image="sagemaker-tidymodels",
     )
 
