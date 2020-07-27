@@ -62,7 +62,7 @@ library(tidymodels)
 
 if (sys.nframe() == 0) {
 
-  input_path <- file.path(Sys.getenv('SM_CHANNEL_TRAIN'), "census-income.csv")
+  input_path <- file.path(Sys.getenv("SM_CHANNEL_TRAIN"), "census-income.csv")
   df <- read.csv(input_path, stringsAsFactors = TRUE)
 
 
@@ -73,7 +73,7 @@ if (sys.nframe() == 0) {
   model <- pipeline %>%
     fit(data = df)
 
-  output_path <- file.path(Sys.getenv('SM_MODEL_DIR'), "model.RDS")
+  output_path <- file.path(Sys.getenv("SM_MODEL_DIR"), "model.RDS")
   saveRDS(model, output_path)
 }
 ```
