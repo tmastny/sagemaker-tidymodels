@@ -25,15 +25,18 @@ def make_predictor(model, instance_type="local"):
 
 
 @pytest.mark.parametrize(
-    "instance_type,image",
+    "entry_point,instance_type,image",
     [
-        ("local", "sagemaker-tidymodels"),
+        ("tests/train.R", "local", "sagemaker-tidymodels"),
+        ("tests/train-adv.R", "local", "sagemaker-tidymodels"),
         pytest.param(
-            "ml.t2.medium", "tmastny/sagemaker-tidymodels", marks=pytest.mark.slow
+            "tests/train.R",
+            "ml.m4.xlarge",
+            "tmastny/sagemaker-tidymodels",
+            marks=pytest.mark.slow,
         ),
     ],
 )
-@pytest.mark.parametrize("entry_point", ["tests/train.R", "tests/train-adv.R"])
 def test_train(entry_point, instance_type, image):
 
     tidymodels = Tidymodels(
