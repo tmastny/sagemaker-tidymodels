@@ -5,12 +5,10 @@ docker-build:
 	docker build docker/ -t sagemaker-tidymodels
 
 test-local:
-	pytest tests/test_local_instance.py
+	pytest tests/test_framework.py --skipslow
 
-test-integration:
+test:
 	pytest tests/test_integration.py
-
-test: | test-local test-integration
 
 publish: | lint docker-build test
 

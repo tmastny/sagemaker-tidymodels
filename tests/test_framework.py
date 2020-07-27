@@ -1,3 +1,4 @@
+from _pytest.outcomes import skip
 import pytest
 
 import sys
@@ -16,19 +17,23 @@ with open("tests/example-data.csv") as example_data:
     example_data = example_data.read()
 
 
-def make_predictor(model):
-    predictor = model.deploy(initial_instance_count=1, instance_type="local")
+def make_predictor(model, instance_type="local"):
+    predictor = model.deploy(initial_instance_count=1, instance_type=instance_type)
     predictor.content_type = "application/json"
     predictor.deserializer = json_deserializer
 
     return predictor
 
 
+@pytest.mark.parametrize(
+    "train_instance_type",
+    ["local", pytest.param("ml.m4.xlarge", marks=pytest.mark.slow)],
+)
 @pytest.mark.parametrize("entry_point", ["tests/train.R", "tests/train-adv.R"])
-def test_local_trainining(entry_point):
+def test_trainining(entry_point, train_instance_type):
     tidymodels = Tidymodels(
         entry_point=entry_point,
-        train_instance_type="local",
+        train_instance_type=train_instance_type,
         role=get_role(),
         image_name="sagemaker-tidymodels",
     )
@@ -36,7 +41,11 @@ def test_local_trainining(entry_point):
     tidymodels.fit({"train": s3_training_data})
 
 
-def test_local_endpoint():
+@pytest.mark.parametrize(
+    "instance_type",
+    ["local", pytest.param("ml.t2.medium", marks=pytest.mark.slow)],
+)
+def test_endpoint(instance_type):
 
     model = TidymodelsModel(
         model_data=model_data,
@@ -45,7 +54,7 @@ def test_local_endpoint():
         image="sagemaker-tidymodels",
     )
 
-    predictor = make_predictor(model)
+    predictor = make_predictor(model, instance_type)
     predicted_value = predictor.predict(example_data)
 
     predictor.delete_endpoint()
@@ -80,3 +89,8 @@ def test_custom_serve_fn(capsys):
     assert "__custom-input_fn__" in out
     assert "__custom-predict_fn__" in out
     assert "__custom-output_fn__" in out
+
+
+@pytest.mark.slow
+def test_dockerhub_readme_example():
+    import tests.train
