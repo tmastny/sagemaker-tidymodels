@@ -26,13 +26,11 @@ with open("tests/example-data.csv") as example_data:
 
 def test_local_endpoint():
     model_data = "s3://sagemaker-us-east-2-495577990003/sagemaker-tidymodels-2020-07-26-02-38-10-117/model.tar.gz"
-    source_dir = "s3://sagemaker-us-east-2-495577990003/sagemaker-tidymodels-2020-07-26-23-37-01-218/source/sourcedir.tar.gz"
 
     model = TidymodelsModel(
         model_data=model_data,
         role=get_role(),
         entry_point="tests/train-adv.R",
-        source_dir=source_dir,
         image="sagemaker-tidymodels",
     )
 
@@ -45,7 +43,3 @@ def test_local_endpoint():
     predictor.delete_endpoint()
 
     assert predicted_value == ["- 50000.\n"]
-
-
-## TODO:
-##   add test with custom serve functions
