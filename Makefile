@@ -10,7 +10,7 @@ test-local:
 test:
 	pytest tests/test_integration.py
 
-publish: | lint docker-build test
+final: | lint docker-build test
 
 README.md: README.Rmd tests/train.R tests/train.py
 	Rscript -e "rmarkdown::render('README.Rmd', run_pandoc = FALSE)"
