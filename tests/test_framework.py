@@ -42,8 +42,7 @@ def test_trainining(entry_point, train_instance_type):
 
 
 @pytest.mark.parametrize(
-    "instance_type",
-    ["local", pytest.param("ml.t2.medium", marks=pytest.mark.slow)],
+    "instance_type", ["local", pytest.param("ml.t2.medium", marks=pytest.mark.slow)],
 )
 def test_endpoint(instance_type):
 

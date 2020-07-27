@@ -8,7 +8,7 @@ test-local:
 	pytest tests/test_framework.py --skipslow
 
 test:
-	pytest tests/test_integration.py
+	pytest tests/
 
 final: | lint docker-build test
 
