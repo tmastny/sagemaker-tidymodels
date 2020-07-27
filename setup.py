@@ -20,8 +20,9 @@ requirements = open("requirements.txt").read()
 setup(
     name="sagemaker-tidymodels",
     version="0.1.0",
-    description=" ",
+    description="Sagemaker framework for Tidymodels",
     long_description=readme,
+    long_description_content_type="text/markdown",
     author="Timothy Mastny",
     author_email="tim.mastny@gmail.com",
     url="https://github.com/tmastny/sagemaker-tidymodels",

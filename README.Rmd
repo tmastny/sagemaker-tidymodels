@@ -22,15 +22,12 @@ write locally.
 
 ## Installation
 
-This Python package is not yet available on PyPi. In the meantime, you can
-install it from Github:
+You can install the framework with from [PyPi](https://pypi.org/project/sagemaker-tidymodels/0.1.0/):
 ```bash
-git clone https://github.com/tmastny/sagemaker-tidymodels.git
-pip install sagemaker-tidymodels/
+pip install sagemaker-tidymodels
 ```
 
-The docker image is hosted on [dockerhub](https://hub.docker.com/repository/docker/tmastny/sagemaker-tidymodels),
-or you can pull directly with
+The docker image is available on [dockerhub](https://hub.docker.com/repository/docker/tmastny/sagemaker-tidymodels):
 ```bash
 docker pull tmastny/sagemaker-tidymodels
 ```

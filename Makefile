@@ -15,5 +15,9 @@ test: | test-local test-integration
 publish: | lint docker-build test
 
 README.md: README.Rmd tests/train.R tests/train.py
-	Rscript -e "rmarkdown::render('README.Rmd', run_pandoc = FALSE)"; \
-	rm -f README.knit.md
+	Rscript -e "rmarkdown::render('README.Rmd', run_pandoc = FALSE)"
+	mv README.knit.md README.md
+
+package:
+	python setup.py sdist bdist_wheel;
+	twine upload dist/*

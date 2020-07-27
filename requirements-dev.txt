@@ -1,0 +1,4 @@
+sagemaker
+setuptools
+wheel
+twine
