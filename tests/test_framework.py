@@ -4,14 +4,24 @@ import pytest
 import sys
 
 
-from sagemaker_tidymodels import Tidymodels, TidymodelsModel, get_account, get_region, get_role
+from sagemaker_tidymodels import (
+    Tidymodels,
+    TidymodelsModel,
+    get_account,
+    get_region,
+    get_role,
+)
 from sagemaker.predictor import json_deserializer
 
 s3_training_data = (
     "s3://sagemaker-sample-data-us-east-2/processing/census/census-income.csv"
 )
-model_data = "s3://sagemaker-{}-{}/sagemaker-tidymodels-2020-07-26-02-38-10-117/model.tar.gz".format(get_account(), get_region()))
-ecr_image = "{}.dkr.ecr.{}.amazonaws.com/sagemaker-tidymodels".format(get_account(), get_region())
+model_data = "s3://sagemaker-{}-{}/sagemaker-tidymodels-2020-07-26-02-38-10-117/model.tar.gz".format(
+    get_region(), get_account()
+)
+ecr_image = "{}.dkr.ecr.{}.amazonaws.com/sagemaker-tidymodels".format(
+    get_account(), get_region()
+)
 
 with open("tests/example-data.csv") as example_data:
     example_data = example_data.read()
@@ -52,7 +62,9 @@ def test_train(entry_point, instance_type, image):
     [
         ("local", "sagemaker-tidymodels"),
         pytest.param(
-            "ml.t2.medium", "tmastny/sagemaker-tidymodels", marks=pytest.mark.slow
+            "ml.t2.medium",
+            "tmastny/sagemaker-tidymodels:latest",
+            marks=pytest.mark.slow,
         ),
     ],
 )
