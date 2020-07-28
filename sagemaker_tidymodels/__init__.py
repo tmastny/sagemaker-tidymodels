@@ -4,13 +4,27 @@ from sagemaker.predictor import RealTimePredictor
 import subprocess
 
 
-def get_role(profile="sagemaker"):
-    command = "aws configure get role_arn --profile {}".format(profile)
+def _run_command(command):
     return (
         subprocess.run(command.split(" "), stdout=subprocess.PIPE,)
         .stdout.decode("utf-8")
         .strip()
     )
+
+
+def get_account():
+    command = "aws sts get-caller-identity --query Account --output text"
+    return _run_command(command)
+
+
+def get_region():
+    command = "aws configure get region"
+    return _run_command(command)
+
+
+def get_role(profile="sagemaker"):
+    command = "aws configure get role_arn --profile {}".format(profile)
+    return _run_command(command)
 
 
 class TidymodelsPredictor(RealTimePredictor):

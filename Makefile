@@ -19,3 +19,6 @@ README.md: README.Rmd tests/train.R tests/train.py
 package:
 	python setup.py sdist bdist_wheel;
 	twine upload dist/*
+
+ecr:
+	sh docker/push-to-ecr.sh
