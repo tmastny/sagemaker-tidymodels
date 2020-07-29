@@ -114,6 +114,12 @@ def test_dockerhub_readme_example():
     import tests.train
 
 
-@pytest.mark.xfail
 def test_attach_model():
-    Tidymodels.attach("sagemaker-tidymodels-2020-07-28-00-55-13-512")
+    model = Tidymodels.attach("sagemaker-tidymodels-2020-07-28-00-55-13-512")
+
+    predictor = make_predictor(model)
+    predicted_value = predictor.predict(r"28\n")
+
+    predictor.delete_endpoint()
+
+    assert predicted_value == ["- 50000.\n"]

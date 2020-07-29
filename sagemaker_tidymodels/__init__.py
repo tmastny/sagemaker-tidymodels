@@ -1,6 +1,9 @@
+from os import initgroups
 from sagemaker.estimator import Framework
 from sagemaker.model import FrameworkModel
 from sagemaker.predictor import RealTimePredictor
+
+
 import subprocess
 
 
@@ -74,11 +77,28 @@ class Tidymodels(Framework):
             **dict(kwargs, train_instance_count=1)
         )
 
-    def create_model(self, **kwargs):
+    def create_model(
+        self, entry_point=None, source_dir=None, dependencies=None, role=None, **kwargs
+    ):
         return TidymodelsModel(
             model_data=self.model_data,
             image=self.image_name,
-            role=self.role,
-            entry_point=self.entry_point,
+            role=(role or self.role),
+            entry_point=(entry_point or self.entry_point),
+            source_dir=(source_dir or self._model_source_dir()),
+            dependencies=(dependencies or self.dependencies),
             **kwargs
         )
+
+    @classmethod
+    def _prepare_init_params_from_job_description(
+        cls, job_details, model_channel_name=None
+    ):
+
+        init_params = super(Tidymodels, cls)._prepare_init_params_from_job_description(
+            job_details, model_channel_name
+        )
+
+        init_params["image_name"] = init_params.pop("image")
+
+        return init_params
