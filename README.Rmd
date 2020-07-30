@@ -66,14 +66,14 @@ if (sys.nframe() == 0) {
 
 3. Sagemaker is very specific about input and output locations. The input
    data path is found in an environment variable that can be read using
-   `Sys.getenv('SM_CHANNEL_TRAIN')`. Likewise, the output model path can
-   be found with `Sys.getenv('SM_MODEL_DIR')`.
+   `Sys.getenv("SM_CHANNEL_TRAIN")`. Likewise, the output model path can
+   be found with `Sys.getenv("SM_MODEL_DIR")`.
 
 From there, you can deploy the model as normal!
 
 ```{python, eval=FALSE}
 predictor = model.deploy(initial_instance_count=1, instance_type="local")
-predictor.predict(r'28\n')
+predictor.predict("28\n")
 ```
 
 

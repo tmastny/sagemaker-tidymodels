@@ -104,7 +104,7 @@ From there, you can deploy the model as normal\!
 
 ``` python
 predictor = model.deploy(initial_instance_count=1, instance_type="local")
-predictor.predict(r'28\n')
+predictor.predict("28\n")
 ```
 
 ## Advanced Usage
