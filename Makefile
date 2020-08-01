@@ -17,6 +17,7 @@ README.md: README.Rmd tests/train.R tests/train.py
 	mv README.knit.md README.md
 
 package:
+	rm -f dist/*
 	python setup.py sdist bdist_wheel;
 	twine upload dist/*
 
